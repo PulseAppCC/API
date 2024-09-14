@@ -1,0 +1,26 @@
+# Server Configuration
+server:
+  address: 0.0.0.0
+  port: 7500
+
+# Log Configuration
+logging:
+  file:
+    path: "./logs"
+
+# Sentry Configuration
+sentry:
+  dsn: "CHANGE_ME"
+  tracesSampleRate: 1.0
+  environment: "development"
+
+# QuestDB Configuration (Metrics)
+questdb:
+  enabled: false
+  uri: "http::addr=localhost:9000;username=tether;password=p4$$w0rd;auto_flush_interval=5000;"
+
+# Spring Configuration
+spring:
+  # Ignore
+  banner:
+    location: "classpath:banner.txt"
