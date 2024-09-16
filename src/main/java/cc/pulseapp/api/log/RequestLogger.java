@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  * @author Braydon
  */
 @ControllerAdvice
-@Slf4j(topic = "Req/Res Transaction")
+@Slf4j(topic = "HTTP Request")
 public class RequestLogger implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(@NonNull MethodParameter returnType, @NonNull Class<? extends HttpMessageConverter<?>> converterType) {

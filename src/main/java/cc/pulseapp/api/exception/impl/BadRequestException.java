@@ -1,5 +1,6 @@
 package cc.pulseapp.api.exception.impl;
 
+import cc.pulseapp.api.model.IGenericResponse;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public final class BadRequestException extends RuntimeException {
-    public BadRequestException(@NonNull String message) {
-        super(message);
+    public BadRequestException(@NonNull IGenericResponse error) {
+        super(error.name());
     }
 }
