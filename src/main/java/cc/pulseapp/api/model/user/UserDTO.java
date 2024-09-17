@@ -34,14 +34,14 @@ public final class UserDTO {
     @NonNull private final UserTier tier;
 
     /**
-     * The date this user last logged in.
-     */
-    @NonNull private final Date lastLogin;
-
-    /**
      * The flags for this user.
      */
     private final int flags;
+
+    /**
+     * The date this user last logged in.
+     */
+    @NonNull private final Date lastLogin;
 
     /**
      * The date this user was created.
@@ -57,8 +57,8 @@ public final class UserDTO {
      */
     @NonNull
     public static UserDTO asDTO(@NonNull User user, @NonNull Date creationTime) {
-        return new UserDTO(user.getSnowflake(), user.getEmail(), user.getUsername(), user.getTier(),
-                user.getLastLogin(), user.getFlags(), creationTime
+        return new UserDTO(user.getSnowflake(), user.getEmail(), user.getUsername(),
+                user.getTier(), user.getFlags(), user.getLastLogin(), creationTime
         );
     }
 }
