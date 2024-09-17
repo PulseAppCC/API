@@ -16,7 +16,7 @@ public final class StatusPage {
     /**
      * The snowflake id of this status page.
      */
-    @Id @EqualsAndHashCode.Include private final long id;
+    @Id @EqualsAndHashCode.Include private final long snowflake;
 
     /**
      * The name of this status page.

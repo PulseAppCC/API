@@ -10,14 +10,14 @@ import java.util.Date;
 /**
  * @author Braydon
  */
-@AllArgsConstructor @Getter
+@AllArgsConstructor @Setter @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true) @ToString
 @Document("users")
 public final class User {
     /**
      * The snowflake id of this user.
      */
-    @Id @EqualsAndHashCode.Include private final long id;
+    @Id @EqualsAndHashCode.Include private final long snowflake;
 
     /**
      * This user's email.
@@ -52,7 +52,7 @@ public final class User {
     /**
      * The date this user last logged in.
      */
-    @NonNull private final Date lastLogin;
+    @NonNull private Date lastLogin;
 
     /**
      * Check if this user has a given flag.

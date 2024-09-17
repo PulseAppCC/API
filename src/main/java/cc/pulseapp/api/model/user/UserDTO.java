@@ -16,7 +16,7 @@ public final class UserDTO {
     /**
      * The snowflake id of this user.
      */
-    @EqualsAndHashCode.Include private final long id;
+    @EqualsAndHashCode.Include private final long snowflake;
 
     /**
      * This user's email.
@@ -57,7 +57,7 @@ public final class UserDTO {
      */
     @NonNull
     public static UserDTO asDTO(@NonNull User user, @NonNull Date creationTime) {
-        return new UserDTO(user.getId(), user.getEmail(), user.getUsername(), user.getTier(),
+        return new UserDTO(user.getSnowflake(), user.getEmail(), user.getUsername(), user.getTier(),
                 user.getLastLogin(), user.getFlags(), creationTime
         );
     }

@@ -18,7 +18,7 @@ public final class Organization {
     /**
      * The snowflake id of this organization.
      */
-    @Id @EqualsAndHashCode.Include private final long id;
+    @Id @EqualsAndHashCode.Include private final long snowflake;
 
     /**
      * The name of this organization.

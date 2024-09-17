@@ -1,6 +1,6 @@
 package cc.pulseapp.api.log;
 
-import cc.pulseapp.api.common.IPUtils;
+import cc.pulseapp.api.common.RequestUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -37,7 +37,7 @@ public class RequestLogger implements ResponseBodyAdvice<Object> {
         HttpServletResponse response = ((ServletServerHttpResponse) rawResponse).getServletResponse();
 
         // Get the request ip ip
-        String ip = IPUtils.getRealIp(request);
+        String ip = RequestUtils.getRealIp(request);
 
         log.info("%s | %s %s %s %s".formatted(
                 ip, request.getMethod(), request.getRequestURI(), request.getProtocol(), response.getStatus()
