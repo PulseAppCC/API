@@ -18,11 +18,6 @@ public final class UserLoginInput {
     private final String email;
 
     /**
-     * The username of the user to login with.
-     */
-    private final String username;
-
-    /**
      * The password of the user to login with.
      */
     private final String password;
@@ -38,7 +33,7 @@ public final class UserLoginInput {
      * @return whether this input is valid
      */
     public boolean isValid() {
-        return (email != null && (!email.isBlank()) || username != null && (!username.isBlank()))
+        return email != null && (!email.isBlank())
                 && password != null && (!password.isBlank())
                 && captchaResponse != null && (!captchaResponse.isBlank());
     }

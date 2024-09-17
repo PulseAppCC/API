@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 /**
  * This controller is responsible for
  * handling user authentication requests.
@@ -36,5 +38,10 @@ public final class UserController {
     @GetMapping("/@me") @ResponseBody @NonNull
     public ResponseEntity<UserDTO> getUser() {
         return ResponseEntity.ok(userService.getUser());
+    }
+
+    @GetMapping("/exists") @ResponseBody @NonNull
+    public ResponseEntity<Map<String, Object>> doesUserExist(@RequestParam @NonNull String email) {
+        return ResponseEntity.ok(Map.of("exists", userService.doesUserExist(email)));
     }
 }

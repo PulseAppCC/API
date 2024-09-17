@@ -8,6 +8,7 @@ import kong.unirest.core.JsonNode;
 import kong.unirest.core.Unirest;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,7 +29,10 @@ public final class CaptchaService {
         JsonObject body = new JsonObject();
         body.addProperty("secret", secretKey);
         body.addProperty("response", captchaResponse);
-        HttpResponse<JsonNode> response = Unirest.post("https://challenges.cloudflare.com/turnstile/v0/siteverify").body(body).asJson();
+        HttpResponse<JsonNode> response = Unirest.post("https://challenges.cloudflare.com/turnstile/v0/siteverify")
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .body(body)
+                .asJson();
         if (!response.getBody().getObject().getBoolean("success")) {
             throw new BadRequestException(Error.CAPTCHA_INVALID);
         }

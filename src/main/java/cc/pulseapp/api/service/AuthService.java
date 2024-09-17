@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Date;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -100,8 +99,7 @@ public final class AuthService {
         validateLoginInput(input); // Ensure the input is valid
 
         // Lookup the user by the email or username and ensure the user exists
-        User user = input.getEmail() == null ? userRepository.findByUsernameIgnoreCase(Objects.requireNonNull(input.getUsername()))
-                : userRepository.findByEmailIgnoreCase(input.getEmail());
+        User user = userRepository.findByEmailIgnoreCase(input.getEmail());
         if (user == null) {
             throw new BadRequestException(Error.USER_NOT_FOUND);
         }
@@ -197,9 +195,7 @@ public final class AuthService {
             throw new BadRequestException(passwordError);
         }
         // Finally validate the captcha
-        if (EnvironmentUtils.isProduction()) {
-            captchaService.validateCaptcha(input.getCaptchaResponse());
-        }
+        captchaService.validateCaptcha(input.getCaptchaResponse());
     }
 
     /**
@@ -217,14 +213,8 @@ public final class AuthService {
         if (input.getEmail() != null && (!StringUtils.isValidEmail(input.getEmail()))) {
             throw new BadRequestException(Error.EMAIL_INVALID);
         }
-        // Ensure the username is valid
-        if (input.getUsername() != null && (!StringUtils.isValidUsername(input.getUsername()))) {
-            throw new BadRequestException(Error.USERNAME_INVALID);
-        }
         // Finally validate the captcha
-        if (EnvironmentUtils.isProduction()) {
-            captchaService.validateCaptcha(input.getCaptchaResponse());
-        }
+        captchaService.validateCaptcha(input.getCaptchaResponse());
     }
 
     private enum Error implements IGenericResponse {

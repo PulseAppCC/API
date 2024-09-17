@@ -60,6 +60,7 @@ public class WebSecurityConfig {
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/error")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/v*/auth/register")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/v*/auth/login")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/v*/user/exists")).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint((request, response, authException) -> { // Handle invalid access tokens
