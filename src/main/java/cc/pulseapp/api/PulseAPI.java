@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -14,7 +15,7 @@ import java.util.Objects;
 /**
  * @author Braydon
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
 @Log4j2(topic = "PulseApp")
 public class PulseAPI {
     @SneakyThrows

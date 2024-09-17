@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/v1/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public final class AuthController {
     /**
-     * The user service to use.
+     * The auth service to use.
      */
     @NonNull private final AuthService authService;
 

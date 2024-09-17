@@ -34,12 +34,12 @@ public final class StatusPage {
     @NonNull private final String slug;
 
     /**
-     * The id to the logo of this status page, if any.
+     * The hash to the logo of this status page, if any.
      */
     private final String logo;
 
     /**
-     * The id to the banner of this status page, if any.
+     * The hash to the banner of this status page, if any.
      */
     private final String banner;
 

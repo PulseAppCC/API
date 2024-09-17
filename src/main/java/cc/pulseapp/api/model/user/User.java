@@ -40,6 +40,11 @@ public final class User {
     @NonNull private final String passwordSalt;
 
     /**
+     * The hash to the avatar of this user, if any.
+     */
+    private final String avatar;
+
+    /**
      * The tier of this user.
      */
     @NonNull private final UserTier tier;
@@ -47,12 +52,21 @@ public final class User {
     /**
      * The flags for this user.
      */
-    private final int flags;
+    private int flags;
 
     /**
      * The date this user last logged in.
      */
     @NonNull private Date lastLogin;
+
+    /**
+     * Add a flag to this user.
+     *
+     * @param flag the flag to add
+     */
+    public void addFlag(@NonNull UserFlag flag) {
+        flags |= flag.ordinal();
+    }
 
     /**
      * Check if this user has a given flag.

@@ -5,6 +5,7 @@ import cc.pulseapp.api.common.HashUtils;
 import cc.pulseapp.api.common.RequestUtils;
 import cc.pulseapp.api.common.StringUtils;
 import cc.pulseapp.api.exception.impl.BadRequestException;
+import cc.pulseapp.api.exception.impl.ResourceNotFoundException;
 import cc.pulseapp.api.model.IGenericResponse;
 import cc.pulseapp.api.model.user.Session;
 import cc.pulseapp.api.model.user.User;
@@ -17,6 +18,7 @@ import cc.pulseapp.api.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
@@ -81,7 +83,7 @@ public final class AuthService {
         return generateSession(request, userRepository.save(new User(
                 snowflakeService.generateSnowflake(), input.getEmail(), input.getUsername(),
                 HashUtils.hash(salt, input.getPassword()), Base64.getEncoder().encodeToString(salt),
-                UserTier.FREE, 0, now
+                null, UserTier.FREE, 0, now
         )));
     }
 
@@ -109,6 +111,38 @@ public final class AuthService {
         }
         user.setLastLogin(new Date());
         return generateSession(request, userRepository.save(user));
+    }
+
+    /**
+     * Get the authenticated user.
+     *
+     * @return the authenticated user
+     * @throws ResourceNotFoundException if the user doesn't exist
+     */
+    @NonNull
+    public User getAuthenticatedUser() throws ResourceNotFoundException {
+        Session session = (Session) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        return getUserFromSnowflake(session.getUserSnowflake());
+    }
+
+    /**
+     * Get a user from a snowflake, if the user exists.
+     *
+     * @param snowflake the snowflake of the user
+     * @return the user from the snowflake
+     * @throws BadRequestException       if the snowflake is invalid
+     * @throws ResourceNotFoundException if the user doesn't exist
+     */
+    @NonNull
+    public User getUserFromSnowflake(long snowflake) {
+        if (snowflake < 1L) {
+            throw new ResourceNotFoundException(Error.USER_NOT_FOUND);
+        }
+        User user = userRepository.findById(snowflake).orElse(null);
+        if (user == null) {
+            throw new ResourceNotFoundException(Error.USER_NOT_FOUND);
+        }
+        return user;
     }
 
     /**
