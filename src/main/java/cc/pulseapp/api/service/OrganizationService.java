@@ -36,12 +36,13 @@ public final class OrganizationService {
      * Create a new organization.
      *
      * @param name  the org name
+     * @param slug  the org slug
      * @param owner the owner of the org
      * @return the created org
      * @throws BadRequestException if the org creation fails
      */
     @NonNull
-    public Organization createOrganization(@Nonnull String name, @NonNull User owner) throws BadRequestException {
+    public Organization createOrganization(@Nonnull String name, @Nonnull String slug, @NonNull User owner) throws BadRequestException {
         // Ensure org creation is enabled
         if (!Feature.ORG_CREATION_ENABLED.isEnabled()) {
             throw new BadRequestException(Error.ORG_CREATION_DISABLED);
@@ -51,7 +52,7 @@ public final class OrganizationService {
             throw new BadRequestException(Error.ORG_NAME_TAKEN);
         }
         // Create the org and return it
-        return orgRepository.save(new Organization(snowflakeService.generateSnowflake(), name, owner.getSnowflake()));
+        return orgRepository.save(new Organization(snowflakeService.generateSnowflake(), name, slug, owner.getSnowflake()));
     }
 
     /**

@@ -20,6 +20,11 @@ public final class CompleteOnboardingInput {
     private final String organizationName;
 
     /**
+     * The slug of the {@link Organization} to create.
+     */
+    private final String organizationSlug;
+
+    /**
      * The name of the {@link StatusPage} to create.
      */
     private final String statusPageName;
@@ -31,6 +36,7 @@ public final class CompleteOnboardingInput {
      */
     public boolean isValid() {
         return organizationName != null && (!organizationName.isBlank())
+                && organizationSlug != null && (!organizationSlug.isBlank())
                 && statusPageName != null && (!statusPageName.isBlank());
     }
 }

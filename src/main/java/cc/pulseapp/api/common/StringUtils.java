@@ -1,6 +1,8 @@
 package cc.pulseapp.api.common;
 
 import cc.pulseapp.api.model.IGenericResponse;
+import cc.pulseapp.api.model.org.Organization;
+import cc.pulseapp.api.model.user.User;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
@@ -17,9 +19,6 @@ public final class StringUtils {
     private static final String SPECIAL_STRING = "!@#$%^&*()_+-=[]{}|;:,.<>?";
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
-    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-z0-9_.]*$");
-
     /**
      * Check if the given email is valid.
      *
@@ -27,7 +26,7 @@ public final class StringUtils {
      * @return whether the email is valid
      */
     public static boolean isValidEmail(@NonNull String email) {
-        return !email.isBlank() && EMAIL_PATTERN.matcher(email).matches();
+        return !email.isBlank() && User.EMAIL_PATTERN.matcher(email).matches();
     }
 
     /**
@@ -37,7 +36,17 @@ public final class StringUtils {
      * @return whether the username is valid
      */
     public static boolean isValidUsername(@NonNull String username) {
-        return USERNAME_PATTERN.matcher(username).matches();
+        return User.USERNAME_PATTERN.matcher(username).matches();
+    }
+
+    /**
+     * Check if the given org slug is valid.
+     *
+     * @param slug the slug to check
+     * @return whether the slug is valid
+     */
+    public static boolean isValidOrgSlug(@NonNull String slug) {
+        return Organization.SLUG_PATTERN.matcher(slug).matches();
     }
 
     /**

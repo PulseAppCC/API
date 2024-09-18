@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * @author Braydon
@@ -14,6 +15,9 @@ import java.util.Date;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true) @ToString
 @Document("users")
 public final class User {
+    public static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+    public static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-z0-9_.]*$");
+
     /**
      * The snowflake id of this user.
      */

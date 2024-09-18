@@ -77,16 +77,27 @@ public final class UserService {
         return StringUtils.isValidEmail(email) && userRepository.findByEmailIgnoreCase(email) != null;
     }
 
-    public void completeOnboarding(CompleteOnboardingInput input) {
+    /**
+     * Complete the onboarding
+     * process for a user.
+     *
+     * @param input the input to process
+     * @throws BadRequestException if onboarding fails
+     */
+    public void completeOnboarding(CompleteOnboardingInput input) throws BadRequestException {
         // Ensure the input was provided
         if (input == null || (!input.isValid())) {
             throw new BadRequestException(Error.MALFORMED_ONBOARDING_INPUT);
+        }
+        // Ensure the org slug is valid
+        if (!StringUtils.isValidOrgSlug(input.getOrganizationSlug())) {
+            throw new BadRequestException(Error.ORGANIZATION_SLUG_INVALID);
         }
         User user = authService.getAuthenticatedUser();
         if (user.hasFlag(UserFlag.COMPLETED_ONBOARDING)) { // Already completed
             throw new BadRequestException(Error.ALREADY_ONBOARDED);
         }
-        Organization org = orgService.createOrganization(input.getOrganizationName(), user); // Create the org
+        Organization org = orgService.createOrganization(input.getOrganizationName(), input.getOrganizationSlug(), user); // Create the org
         statusPageService.createStatusPage(input.getStatusPageName(), org); // Create the status page
         user.addFlag(UserFlag.COMPLETED_ONBOARDING); // Flag completed onboarding
         userRepository.save(user);
@@ -97,6 +108,7 @@ public final class UserService {
      */
     private enum Error implements IGenericResponse {
         MALFORMED_ONBOARDING_INPUT,
+        ORGANIZATION_SLUG_INVALID,
         ALREADY_ONBOARDED,
     }
 }
