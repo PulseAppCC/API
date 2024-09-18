@@ -18,7 +18,7 @@ public final class StringUtils {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
-    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_.]*$");
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-z0-9_.]*$");
 
     /**
      * Check if the given email is valid.

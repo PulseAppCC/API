@@ -2,7 +2,7 @@ name: Deploy API
 
 on:
   push:
-    branches: ["master"]
+    branches: [ "master" ]
     paths-ignore:
       - README.md
       - LICENSE
@@ -11,8 +11,8 @@ jobs:
   deploy:
     strategy:
       matrix:
-        arch: ["ubuntu-latest"]
-        git-version: ["2.44.0"]
+        arch: [ "ubuntu-latest" ]
+        git-version: [ "2.44.0" ]
     runs-on: ${{ matrix.arch }}
 
     # Steps to run

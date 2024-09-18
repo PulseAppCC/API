@@ -1,9 +1,9 @@
 package cc.pulseapp.api.controller.v1;
 
 import cc.pulseapp.api.exception.impl.BadRequestException;
-import cc.pulseapp.api.model.user.Session;
 import cc.pulseapp.api.model.user.input.UserLoginInput;
 import cc.pulseapp.api.model.user.input.UserRegistrationInput;
+import cc.pulseapp.api.model.user.response.UserAuthResponse;
 import cc.pulseapp.api.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
@@ -39,11 +39,11 @@ public final class AuthController {
      *
      * @param request the http request
      * @param input   the registration input
-     * @return the session for the registered user
+     * @return the user auth response
      * @throws BadRequestException if the registration fails
      */
     @PostMapping("/register") @ResponseBody @NonNull
-    public ResponseEntity<Session> register(@NonNull HttpServletRequest request, UserRegistrationInput input) throws BadRequestException {
+    public ResponseEntity<UserAuthResponse> register(@NonNull HttpServletRequest request, UserRegistrationInput input) throws BadRequestException {
         return ResponseEntity.ok(authService.registerUser(request, input));
     }
 
@@ -52,11 +52,11 @@ public final class AuthController {
      *
      * @param request the http request
      * @param input   the login input
-     * @return the session for the login user
+     * @return the user auth response
      * @throws BadRequestException if the login fails
      */
     @PostMapping("/login") @ResponseBody @NonNull
-    public ResponseEntity<Session> login(@NonNull HttpServletRequest request, UserLoginInput input) throws BadRequestException {
+    public ResponseEntity<UserAuthResponse> login(@NonNull HttpServletRequest request, UserLoginInput input) throws BadRequestException {
         return ResponseEntity.ok(authService.loginUser(request, input));
     }
 }

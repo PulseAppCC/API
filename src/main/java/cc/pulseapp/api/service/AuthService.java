@@ -7,12 +7,10 @@ import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.exception.impl.ResourceNotFoundException;
 import cc.pulseapp.api.model.Feature;
 import cc.pulseapp.api.model.IGenericResponse;
-import cc.pulseapp.api.model.user.Session;
-import cc.pulseapp.api.model.user.User;
-import cc.pulseapp.api.model.user.UserFlag;
-import cc.pulseapp.api.model.user.UserTier;
+import cc.pulseapp.api.model.user.*;
 import cc.pulseapp.api.model.user.input.UserLoginInput;
 import cc.pulseapp.api.model.user.input.UserRegistrationInput;
+import cc.pulseapp.api.model.user.response.UserAuthResponse;
 import cc.pulseapp.api.repository.SessionRepository;
 import cc.pulseapp.api.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,11 +62,11 @@ public final class AuthService {
      *
      * @param request the http request
      * @param input   the registration input
-     * @return the registered user's auth token
+     * @return the user auth response
      * @throws BadRequestException if the input has an error
      */
     @NonNull
-    public Session registerUser(@NonNull HttpServletRequest request, UserRegistrationInput input) throws BadRequestException {
+    public UserAuthResponse registerUser(@NonNull HttpServletRequest request, UserRegistrationInput input) throws BadRequestException {
         // Ensure user registration is enabled
         if (!Feature.USER_REGISTRATION_ENABLED.isEnabled()) {
             throw new BadRequestException(Error.REGISTRATION_DISABLED);
@@ -83,11 +81,12 @@ public final class AuthService {
         // Create the user and return it
         byte[] salt = HashUtils.generateSalt();
         Date now = new Date();
-        return generateSession(request, userRepository.save(new User(
+        User user = userRepository.save(new User(
                 snowflakeService.generateSnowflake(), input.getEmail(), input.getUsername().toLowerCase(),
                 HashUtils.hash(salt, input.getPassword()), Base64.getEncoder().encodeToString(salt),
                 null, UserTier.FREE, 0, now
-        )));
+        ));
+        return new UserAuthResponse(generateSession(request, user), UserDTO.asDTO(user, now));
     }
 
     /**
@@ -95,11 +94,11 @@ public final class AuthService {
      *
      * @param request the http request
      * @param input   the login input
-     * @return the logged in user's auth token
+     * @return the user auth response
      * @throws BadRequestException if the input has an error
      */
     @NonNull
-    public Session loginUser(@NonNull HttpServletRequest request, UserLoginInput input) throws BadRequestException {
+    public UserAuthResponse loginUser(@NonNull HttpServletRequest request, UserLoginInput input) throws BadRequestException {
         validateLoginInput(input); // Ensure the input is valid
 
         // Lookup the user by the email or username and ensure the user exists
@@ -112,7 +111,9 @@ public final class AuthService {
             throw new BadRequestException(Error.PASSWORDS_DO_NOT_MATCH);
         }
         user.setLastLogin(new Date());
-        return generateSession(request, userRepository.save(user));
+        user = userRepository.save(user);
+        return new UserAuthResponse(generateSession(request, user),
+                UserDTO.asDTO(user, new Date(snowflakeService.extractCreationTime(user.getSnowflake()))));
     }
 
     /**
