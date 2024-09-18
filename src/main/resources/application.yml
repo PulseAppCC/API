@@ -8,6 +8,11 @@ logging:
   file:
     path: "./logs"
 
+# Flagsmith Configuration
+flagsmith:
+  api-url: "https://flags.flagsmith.com/api/v1/"
+  api-key: "CHANGE_ME"
+
 # Cloudflare Captcha Configuration
 captcha:
   secret: "CHANGE_ME"
