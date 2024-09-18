@@ -84,7 +84,7 @@ public final class AuthService {
         byte[] salt = HashUtils.generateSalt();
         Date now = new Date();
         return generateSession(request, userRepository.save(new User(
-                snowflakeService.generateSnowflake(), input.getEmail(), input.getUsername(),
+                snowflakeService.generateSnowflake(), input.getEmail(), input.getUsername().toLowerCase(),
                 HashUtils.hash(salt, input.getPassword()), Base64.getEncoder().encodeToString(salt),
                 null, UserTier.FREE, 0, now
         )));

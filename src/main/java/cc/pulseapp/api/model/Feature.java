@@ -10,7 +10,8 @@ import lombok.*;
 @RequiredArgsConstructor @Getter @ToString
 public enum Feature {
     USER_REGISTRATION_ENABLED("user-registration"),
-    ORG_CREATION_ENABLED("org-creation");
+    ORG_CREATION_ENABLED("org-creation"),
+    STATUS_PAGE_CREATION_ENABLED("status-page-creation");
 
     public static final Feature[] VALUES = values();
 

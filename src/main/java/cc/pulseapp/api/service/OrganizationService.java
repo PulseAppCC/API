@@ -8,6 +8,7 @@ import cc.pulseapp.api.model.user.User;
 import cc.pulseapp.api.repository.OrganizationRepository;
 import jakarta.annotation.Nonnull;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,7 +26,8 @@ public final class OrganizationService {
      */
     @NonNull private final OrganizationRepository orgRepository;
 
-    private OrganizationService(@NonNull SnowflakeService snowflakeService, @NonNull OrganizationRepository orgRepository) {
+    @Autowired
+    public OrganizationService(@NonNull SnowflakeService snowflakeService, @NonNull OrganizationRepository orgRepository) {
         this.snowflakeService = snowflakeService;
         this.orgRepository = orgRepository;
     }

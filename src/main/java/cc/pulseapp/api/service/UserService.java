@@ -3,6 +3,7 @@ package cc.pulseapp.api.service;
 import cc.pulseapp.api.common.StringUtils;
 import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.model.IGenericResponse;
+import cc.pulseapp.api.model.org.Organization;
 import cc.pulseapp.api.model.user.User;
 import cc.pulseapp.api.model.user.UserDTO;
 import cc.pulseapp.api.model.user.UserFlag;
@@ -35,16 +36,23 @@ public final class UserService {
     @NonNull private final OrganizationService orgService;
 
     /**
+     * The status page service to use.
+     */
+    @NonNull private final StatusPageService statusPageService;
+
+    /**
      * The user repository to use.
      */
     @NonNull private final UserRepository userRepository;
 
     @Autowired
     public UserService(@NonNull AuthService authService, @NonNull SnowflakeService snowflakeService,
-                       @NonNull OrganizationService orgService, @NonNull UserRepository userRepository) {
+                       @NonNull OrganizationService orgService, @NonNull StatusPageService statusPageService,
+                       @NonNull UserRepository userRepository) {
         this.authService = authService;
         this.snowflakeService = snowflakeService;
         this.orgService = orgService;
+        this.statusPageService = statusPageService;
         this.userRepository = userRepository;
     }
 
@@ -78,7 +86,8 @@ public final class UserService {
         if (user.hasFlag(UserFlag.COMPLETED_ONBOARDING)) { // Already completed
             throw new BadRequestException(Error.ALREADY_ONBOARDED);
         }
-        orgService.createOrganization(input.getOrganizationName(), user); // Create the org
+        Organization org = orgService.createOrganization(input.getOrganizationName(), user); // Create the org
+        statusPageService.createStatusPage(input.getStatusPageName(), org); // Create the status page
         user.addFlag(UserFlag.COMPLETED_ONBOARDING); // Flag completed onboarding
         userRepository.save(user);
     }
