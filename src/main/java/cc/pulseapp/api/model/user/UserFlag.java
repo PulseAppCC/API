@@ -14,5 +14,10 @@ public enum UserFlag {
     /**
      * The user completed the onboarding process.
      */
-    COMPLETED_ONBOARDING
+    COMPLETED_ONBOARDING,
+
+    /**
+     * The user is an administrator.
+     */
+    ADMINISTRATOR
 }

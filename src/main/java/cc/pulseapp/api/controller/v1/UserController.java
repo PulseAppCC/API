@@ -1,6 +1,8 @@
 package cc.pulseapp.api.controller.v1;
 
+import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.model.user.UserDTO;
+import cc.pulseapp.api.model.user.input.CompleteOnboardingInput;
 import cc.pulseapp.api.service.UserService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +45,11 @@ public final class UserController {
     @GetMapping("/exists") @ResponseBody @NonNull
     public ResponseEntity<Map<String, Object>> doesUserExist(@RequestParam @NonNull String email) {
         return ResponseEntity.ok(Map.of("exists", userService.doesUserExist(email)));
+    }
+
+    @PostMapping("/complete-onboarding") @ResponseBody @NonNull
+    public ResponseEntity<Map<String, Object>> completeOnboarding(CompleteOnboardingInput input) throws BadRequestException {
+        userService.completeOnboarding(input);
+        return ResponseEntity.ok(Map.of("success", true));
     }
 }

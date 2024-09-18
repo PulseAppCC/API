@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Input to login a {@link User}.
+ * The input to login a {@link User}.
  *
  * @author Braydon
  */

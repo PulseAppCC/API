@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Input to register a new {@link User}.
+ * The input to register a new {@link User}.
  *
  * @author Braydon
  */

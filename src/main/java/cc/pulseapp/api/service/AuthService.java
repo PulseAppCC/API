@@ -1,11 +1,11 @@
 package cc.pulseapp.api.service;
 
-import cc.pulseapp.api.common.EnvironmentUtils;
 import cc.pulseapp.api.common.HashUtils;
 import cc.pulseapp.api.common.RequestUtils;
 import cc.pulseapp.api.common.StringUtils;
 import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.exception.impl.ResourceNotFoundException;
+import cc.pulseapp.api.model.Feature;
 import cc.pulseapp.api.model.IGenericResponse;
 import cc.pulseapp.api.model.user.Session;
 import cc.pulseapp.api.model.user.User;
@@ -69,6 +69,10 @@ public final class AuthService {
      */
     @NonNull
     public Session registerUser(@NonNull HttpServletRequest request, UserRegistrationInput input) throws BadRequestException {
+        // Ensure user registration is enabled
+        if (!Feature.USER_REGISTRATION_ENABLED.isEnabled()) {
+            throw new BadRequestException(Error.REGISTRATION_DISABLED);
+        }
         validateRegistrationInput(input); // Ensure the input is valid
 
         // Ensure the given email hasn't been used before
@@ -175,7 +179,7 @@ public final class AuthService {
     private void validateRegistrationInput(UserRegistrationInput input) throws BadRequestException {
         // Ensure the input was provided
         if (input == null || (!input.isValid())) {
-            throw new BadRequestException(Error.MALFORMED_INPUT);
+            throw new BadRequestException(Error.MALFORMED_REGISTRATION_INPUT);
         }
         // Ensure the email is valid
         if (!StringUtils.isValidEmail(input.getEmail())) {
@@ -207,7 +211,7 @@ public final class AuthService {
     private void validateLoginInput(UserLoginInput input) throws BadRequestException {
         // Ensure the input was provided
         if (input == null || (!input.isValid())) {
-            throw new BadRequestException(Error.MALFORMED_INPUT);
+            throw new BadRequestException(Error.MALFORMED_LOGIN_INPUT);
         }
         // Ensure the email is valid
         if (input.getEmail() != null && (!StringUtils.isValidEmail(input.getEmail()))) {
@@ -217,8 +221,13 @@ public final class AuthService {
         captchaService.validateCaptcha(input.getCaptchaResponse());
     }
 
+    /**
+     * Authentication errors.
+     */
     private enum Error implements IGenericResponse {
-        MALFORMED_INPUT,
+        REGISTRATION_DISABLED,
+        MALFORMED_REGISTRATION_INPUT,
+        MALFORMED_LOGIN_INPUT,
         EMAIL_INVALID,
         USERNAME_INVALID,
         USER_NOT_FOUND,
