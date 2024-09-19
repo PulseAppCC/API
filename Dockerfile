@@ -23,4 +23,4 @@ COPY --from=builder /home/container/target/API.jar .
 ENV APP_ENV="production"
 
 # Run the jar file
-CMD java -jar API.jar -Djava.awt.headless=true
+CMD ["java", "-jar", "API.jar", "-Djava.awt.headless=true"]
