@@ -58,6 +58,7 @@ public final class AuthController {
      */
     @PostMapping("/login") @ResponseBody @NonNull
     public ResponseEntity<UserAuthResponse> login(@NonNull HttpServletRequest request, UserLoginInput input) throws BadRequestException {
+        request.getHeaderNames().asIterator().forEachRemaining(System.out::println);
         return ResponseEntity.ok(authService.loginUser(request, input));
     }
 }
