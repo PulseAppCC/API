@@ -29,6 +29,11 @@ public final class UserDTO {
     @Indexed @NonNull private final String username;
 
     /**
+     * The hash to the avatar of this user, if any.
+     */
+    private final String avatar;
+
+    /**
      * The tier of this user.
      */
     @NonNull private final UserTier tier;
@@ -58,7 +63,7 @@ public final class UserDTO {
     @NonNull
     public static UserDTO asDTO(@NonNull User user, @NonNull Date creationTime) {
         return new UserDTO(user.getSnowflake(), user.getEmail(), user.getUsername(),
-                user.getTier(), user.getFlags(), user.getLastLogin(), creationTime
+                user.getAvatar(), user.getTier(), user.getFlags(), user.getLastLogin(), creationTime
         );
     }
 }
