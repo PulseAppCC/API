@@ -2,6 +2,8 @@ package cc.pulseapp.api.model;
 
 import lombok.*;
 
+import java.util.Objects;
+
 /**
  * A feature flag.
  *
@@ -30,6 +32,8 @@ public enum Feature {
      */
     @Setter private Object value;
 
+
+
     /**
      * Get a feature by its id.
      *
@@ -43,5 +47,19 @@ public enum Feature {
             }
         }
         return null;
+    }
+
+    /**
+     * Get the combined hash
+     * code of all features.
+     *
+     * @return the combined hash code
+     */
+    public static int hash() {
+        int hash = 0;
+        for (Feature feature : VALUES) {
+            hash+= Objects.hash(feature.isEnabled(), feature.getValue());
+        }
+        return hash;
     }
 }

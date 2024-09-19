@@ -45,6 +45,7 @@ public final class FlagsService {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override @SneakyThrows
             public void run() {
+                int oldFlags = Feature.hash();
                 for (BaseFlag flag : client.getEnvironmentFlags().getAllFlags()) {
                     Feature feature = Feature.getById(flag.getFeatureName());
                     if (feature == null) {
@@ -54,7 +55,9 @@ public final class FlagsService {
                     feature.setEnabled(flag.getEnabled());
                     feature.setValue(value instanceof String stringedValue && (stringedValue.isBlank()) ? null : value);
                 }
-                log.info("Fetched new flags (:");
+                if (oldFlags != Feature.hash()) {
+                    log.info("Fetched new flags (:");
+                }
             }
         }, 0L, FETCH_INTERVAL);
     }
