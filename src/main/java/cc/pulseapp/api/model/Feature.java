@@ -33,7 +33,6 @@ public enum Feature {
     @Setter private Object value;
 
 
-
     /**
      * Get a feature by its id.
      *
@@ -58,7 +57,7 @@ public enum Feature {
     public static int hash() {
         int hash = 0;
         for (Feature feature : VALUES) {
-            hash+= Objects.hash(feature.isEnabled(), feature.getValue());
+            hash += Objects.hash(feature.isEnabled(), feature.getValue());
         }
         return hash;
     }

@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
+ * A status page owned by an {@link Organization}.
+ *
  * @author Braydon
  */
 @AllArgsConstructor @Getter
@@ -24,14 +26,14 @@ public final class StatusPage {
     @Indexed @NonNull private final String name;
 
     /**
-     * The description of this status page, if any.
-     */
-    private final String description;
-
-    /**
      * The slug of this status page.
      */
     @NonNull private final String slug;
+
+    /**
+     * The description of this status page, if any.
+     */
+    private final String description;
 
     /**
      * The hash to the logo of this status page, if any.

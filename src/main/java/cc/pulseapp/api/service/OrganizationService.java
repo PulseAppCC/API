@@ -3,8 +3,8 @@ package cc.pulseapp.api.service;
 import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.model.Feature;
 import cc.pulseapp.api.model.IGenericResponse;
+import cc.pulseapp.api.model.org.DetailedOrganization;
 import cc.pulseapp.api.model.org.Organization;
-import cc.pulseapp.api.model.org.response.OrganizationResponse;
 import cc.pulseapp.api.model.user.User;
 import cc.pulseapp.api.repository.OrganizationRepository;
 import cc.pulseapp.api.repository.StatusPageRepository;
@@ -70,17 +70,17 @@ public final class OrganizationService {
             throw new BadRequestException(Error.ORG_NAME_TAKEN);
         }
         // Create the org and return it
-        return orgRepository.save(new Organization(snowflakeService.generateSnowflake(), name, slug, owner.getSnowflake()));
+        return orgRepository.save(new Organization(snowflakeService.generateSnowflake(), name, slug, null, owner.getSnowflake()));
     }
 
     @NonNull
-    public OrganizationResponse getOrganizations() {
+    public List<DetailedOrganization> getOrganizations() {
         User user = authService.getAuthenticatedUser();
-        List<OrganizationResponse.Organization> organizations = new ArrayList<>();
+        List<DetailedOrganization> organizations = new ArrayList<>();
         for (Organization org : orgRepository.findByOwnerSnowflake(user.getSnowflake())) {
-            organizations.add(new OrganizationResponse.Organization(org, statusPageRepository.findByOrgSnowflake(org.getSnowflake())));
+            organizations.add(new DetailedOrganization(org, statusPageRepository.findByOrgSnowflake(org.getSnowflake())));
         }
-        return new OrganizationResponse(organizations);
+        return organizations;
     }
 
     /**

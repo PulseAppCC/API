@@ -1,7 +1,7 @@
 package cc.pulseapp.api.controller.v1;
 
+import cc.pulseapp.api.model.org.DetailedOrganization;
 import cc.pulseapp.api.model.org.Organization;
-import cc.pulseapp.api.model.org.response.OrganizationResponse;
 import cc.pulseapp.api.service.OrganizationService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * This controller is responsible for
@@ -38,7 +40,7 @@ public final class OrganizationController {
      * @return the organizations
      */
     @GetMapping("/@me") @ResponseBody @NonNull
-    public ResponseEntity<OrganizationResponse> getOrganizations() {
+    public ResponseEntity<List<DetailedOrganization>> getOrganizations() {
         return ResponseEntity.ok(orgService.getOrganizations());
     }
 }

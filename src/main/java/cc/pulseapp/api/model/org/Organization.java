@@ -35,6 +35,11 @@ public class Organization {
     @Indexed @NonNull private final String slug;
 
     /**
+     * The hash to the logo of this organization, if any.
+     */
+    private final String logo;
+
+    /**
      * The snowflake of the {@link User}
      * that owns this organization.
      */

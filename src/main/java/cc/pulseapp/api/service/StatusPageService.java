@@ -57,7 +57,7 @@ public final class StatusPageService {
         String slug = name.replace(" ", "-") +
                 "-" + ThreadLocalRandom.current().nextInt(10000, 99999);
         return pageRepository.save(new StatusPage(
-                snowflakeService.generateSnowflake(), name, null, slug, null,
+                snowflakeService.generateSnowflake(), name, slug, null, null,
                 null, StatusPageTheme.AUTO, true, owner.getSnowflake())
         );
     }
