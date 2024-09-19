@@ -1,5 +1,6 @@
 package cc.pulseapp.api.service;
 
+import cc.pulseapp.api.common.EnvironmentUtils;
 import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.model.Feature;
 import cc.pulseapp.api.model.IGenericResponse;
@@ -65,9 +66,17 @@ public final class OrganizationService {
         if (!Feature.ORG_CREATION_ENABLED.isEnabled()) {
             throw new BadRequestException(Error.ORG_CREATION_DISABLED);
         }
+        List<Organization> ownedOrgs = orgRepository.findByOwnerSnowflake(owner.getSnowflake());
+
         // Ensure the org name isn't taken
-        if (orgRepository.findByNameIgnoreCase(name) != null) {
+        if (ownedOrgs.stream().anyMatch(org -> org.getName().equalsIgnoreCase(name))) {
             throw new BadRequestException(Error.ORG_NAME_TAKEN);
+        }
+        // Handle cloud environment checks
+        if (EnvironmentUtils.isCloud()) {
+            if (ownedOrgs.size() >= owner.getTier().getMaxOrganizations()) {
+                throw new BadRequestException(Error.MAX_ORGS_REACHED);
+            }
         }
         // Create the org and return it
         slug = slug.trim().replaceAll("-+$", ""); // Trim slug trailing dashes
@@ -95,6 +104,7 @@ public final class OrganizationService {
      */
     private enum Error implements IGenericResponse {
         ORG_CREATION_DISABLED,
-        ORG_NAME_TAKEN
+        ORG_NAME_TAKEN,
+        MAX_ORGS_REACHED
     }
 }

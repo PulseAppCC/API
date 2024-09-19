@@ -1,5 +1,6 @@
 package cc.pulseapp.api.service;
 
+import cc.pulseapp.api.common.EnvironmentUtils;
 import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.model.Feature;
 import cc.pulseapp.api.model.IGenericResponse;
@@ -52,6 +53,10 @@ public final class StatusPageService {
         // Ensure the status page name isn't taken
         if (pageRepository.findByNameIgnoreCase(name) != null) {
             throw new BadRequestException(Error.STATUS_PAGE_NAME_TAKEN);
+        }
+        // Handle cloud environment checks
+        if (EnvironmentUtils.isCloud()) {
+            // TODO: do UserTier#maxStatusPages check
         }
         // Create the status page and return it
         String slug = name.replace(" ", "-") +
