@@ -2,6 +2,7 @@ package cc.pulseapp.api.service;
 
 import cc.pulseapp.api.common.HashUtils;
 import cc.pulseapp.api.common.StringUtils;
+import cc.pulseapp.api.common.Tuple;
 import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.exception.impl.ResourceNotFoundException;
 import cc.pulseapp.api.model.Feature;
@@ -128,8 +129,19 @@ public final class AuthService {
      */
     @NonNull
     public User getAuthenticatedUser() throws ResourceNotFoundException {
+        return getSessionAndUser().getRight();
+    }
+
+    /**
+     * Get the authenticated session and associated user.
+     *
+     * @return the authenticated session and user
+     * @throws ResourceNotFoundException if the user doesn't exist
+     */
+    @NonNull
+    public Tuple<Session, User> getSessionAndUser() throws ResourceNotFoundException {
         Session session = (Session) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        return getUserFromSnowflake(session.getUserSnowflake());
+        return new Tuple<>(session, getUserFromSnowflake(session.getUserSnowflake()));
     }
 
     /**

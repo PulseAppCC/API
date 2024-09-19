@@ -139,7 +139,8 @@ public final class UserService {
     }
 
     /**
-     * Start setting up TFA for a user.
+     * Start setting up TFA for the
+     * currently authenticated user.
      *
      * @return the setup response
      * @throws BadRequestException if the setup fails
@@ -155,6 +156,14 @@ public final class UserService {
         return new UserSetupTFAResponse(secret, tfaService.generateQrCodeUrl(user.getUsername(), secret));
     }
 
+    /**
+     * Enable two-factor auth for the
+     * currently authenticated user.
+     *
+     * @param input the input to process
+     * @return the raw backup codes
+     * @throws BadRequestException if enabling fails
+     */
     @NonNull
     public List<String> enableTwoFactor(EnableTFAInput input) throws BadRequestException {
         if (input == null || (!input.isValid())) { // Ensure the input was provided
@@ -193,6 +202,13 @@ public final class UserService {
         sessionRepository.deleteAll(sessionRepository.findAllByUserSnowflake(user.getSnowflake()));
 
         return originalBackupCodes;
+    }
+
+    /**
+     * Logout the user.
+     */
+    public void logout() {
+        sessionRepository.delete(authService.getSessionAndUser().getLeft());
     }
 
     /**

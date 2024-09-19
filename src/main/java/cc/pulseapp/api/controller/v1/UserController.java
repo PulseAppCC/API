@@ -84,8 +84,26 @@ public final class UserController {
         return ResponseEntity.ok(userService.setupTwoFactor());
     }
 
+    /**
+     * A POST endpoint to enable TFA for a useer.
+     *
+     * @param input the input to process
+     * @return the raw backup codes
+     * @throws BadRequestException if enabling fails
+     */
     @PostMapping("/enable-tfa") @ResponseBody @NonNull
     public ResponseEntity<List<String>> enableTwoFactor(EnableTFAInput input) throws BadRequestException {
         return ResponseEntity.ok(userService.enableTwoFactor(input));
+    }
+
+    /**
+     * A POST endpoint to logout the user.
+     *
+     * @return the logout response
+     */
+    @PostMapping("/logout") @ResponseBody @NonNull
+    public ResponseEntity<Map<String, Object>> logout() {
+        userService.logout();
+        return ResponseEntity.ok(Map.of("success", true));
     }
 }
