@@ -36,6 +36,11 @@ public class PulseAPI {
         SpringApplication.run(PulseAPI.class, args); // Start the app
     }
 
+    /**
+     * Configures CORS for the API.
+     *
+     * @return the WebMvc config
+     */
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -43,11 +48,7 @@ public class PulseAPI {
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 // Allow all origins to access the API
                 registry.addMapping("/**")
-                        .allowedOrigins("*") // Allow all origins
-                        .allowedMethods("*") // Allow all methods
-                        .allowedHeaders("*"); // Allow all headers
-//                registry.addMapping("/*")
-//                        .allowedOrigins("http://localhost:9000");
+                        .allowedOrigins("*"); // Allow all origins
             }
         };
     }

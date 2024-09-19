@@ -20,7 +20,7 @@ WORKDIR /home/container
 COPY --from=builder /home/container/target/API.jar .
 
 # We're running in production
-ENV APP_ENV "production"
+ENV APP_ENV="production"
 
 # Run the jar file
 CMD java -jar API.jar -Djava.awt.headless=true
