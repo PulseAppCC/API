@@ -1,6 +1,6 @@
 package cc.pulseapp.api.repository;
 
-import cc.pulseapp.api.model.user.Session;
+import cc.pulseapp.api.model.user.session.Session;
 import lombok.NonNull;
 import org.springframework.data.repository.CrudRepository;
 

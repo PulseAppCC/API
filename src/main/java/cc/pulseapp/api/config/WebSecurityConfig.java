@@ -1,7 +1,7 @@
 package cc.pulseapp.api.config;
 
 import cc.pulseapp.api.model.IGenericResponse;
-import cc.pulseapp.api.model.user.Session;
+import cc.pulseapp.api.model.user.session.Session;
 import cc.pulseapp.api.repository.SessionRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;

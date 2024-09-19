@@ -11,6 +11,8 @@ import cc.pulseapp.api.model.user.*;
 import cc.pulseapp.api.model.user.input.UserLoginInput;
 import cc.pulseapp.api.model.user.input.UserRegistrationInput;
 import cc.pulseapp.api.model.user.response.UserAuthResponse;
+import cc.pulseapp.api.model.user.session.Session;
+import cc.pulseapp.api.model.user.session.SessionLocation;
 import cc.pulseapp.api.repository.SessionRepository;
 import cc.pulseapp.api.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -166,7 +168,7 @@ public final class AuthService {
                 snowflakeService.generateSnowflake(), user.getSnowflake(),
                 StringUtils.generateRandom(128, true, true, false),
                 StringUtils.generateRandom(128, true, true, false),
-                RequestUtils.getRealIp(request), RequestUtils.getUserAgent(request),
+                SessionLocation.buildFromRequest(request),
                 System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30L)
         ));
     }

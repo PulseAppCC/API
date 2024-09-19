@@ -1,6 +1,6 @@
 package cc.pulseapp.api.model.user.response;
 
-import cc.pulseapp.api.model.user.Session;
+import cc.pulseapp.api.model.user.session.Session;
 import cc.pulseapp.api.model.user.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

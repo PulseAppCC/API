@@ -1,5 +1,6 @@
-package cc.pulseapp.api.model.user;
+package cc.pulseapp.api.model.user.session;
 
+import cc.pulseapp.api.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,14 +38,9 @@ public final class Session {
     @Indexed @NonNull private final String refreshToken;
 
     /**
-     * The IP address of the user that created this session.
+     * The location this session originated from.
      */
-    @NonNull @JsonIgnore private final String ipAddress;
-
-    /**
-     * The user agent of the user that created this session.
-     */
-    @NonNull @JsonIgnore private final String userAgent;
+    @NonNull @JsonIgnore private final SessionLocation location;
 
     /**
      * The unix timestamp of when this token expires.
