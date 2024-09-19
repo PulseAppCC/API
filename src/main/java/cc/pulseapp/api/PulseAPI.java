@@ -51,10 +51,9 @@ public class PulseAPI {
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 // Allow all origins to access the API
                 registry.addMapping("/**")
-                        .allowedOrigins("https://pulseapp.cc") // Allow all origins
                         .allowedMethods(Arrays.stream(HttpMethod.values()).map(HttpMethod::name).toArray(String[]::new)) // Allow all methods
                         .allowedHeaders("*")
-                        .allowCredentials(true); // Allow all headers
+                        .allowCredentials(true);
             }
         };
     }
