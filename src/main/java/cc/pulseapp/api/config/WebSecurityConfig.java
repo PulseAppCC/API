@@ -25,8 +25,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 /**
  * @author Braydon
  */
-@Configuration
-@EnableWebSecurity
+@Configuration @EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class WebSecurityConfig {
     /**
