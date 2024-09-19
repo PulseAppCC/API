@@ -11,6 +11,7 @@ import cc.pulseapp.api.model.user.UserDTO;
 import cc.pulseapp.api.model.user.UserFlag;
 import cc.pulseapp.api.model.user.input.CompleteOnboardingInput;
 import cc.pulseapp.api.model.user.input.EnableTFAInput;
+import cc.pulseapp.api.model.user.input.UserExistsInput;
 import cc.pulseapp.api.model.user.response.UserSetupTFAResponse;
 import cc.pulseapp.api.repository.SessionRepository;
 import cc.pulseapp.api.repository.UserRepository;
@@ -57,6 +58,11 @@ public final class UserService {
     @NonNull private final TFAService tfaService;
 
     /**
+     * The captcha service to use.
+     */
+    @NonNull private final CaptchaService captchaService;
+
+    /**
      * The user repository to use.
      */
     @NonNull private final UserRepository userRepository;
@@ -80,13 +86,14 @@ public final class UserService {
     @Autowired
     public UserService(@NonNull AuthService authService, @NonNull SnowflakeService snowflakeService,
                        @NonNull OrganizationService orgService, @NonNull StatusPageService statusPageService,
-                       @NonNull TFAService tfaService, @NonNull UserRepository userRepository,
-                       @NonNull SessionRepository sessionRepository) {
+                       @NonNull TFAService tfaService, @NonNull CaptchaService captchaService,
+                       @NonNull UserRepository userRepository, @NonNull SessionRepository sessionRepository) {
         this.authService = authService;
         this.snowflakeService = snowflakeService;
         this.orgService = orgService;
         this.statusPageService = statusPageService;
         this.tfaService = tfaService;
+        this.captchaService = captchaService;
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
     }
@@ -103,13 +110,18 @@ public final class UserService {
     }
 
     /**
-     * Check if the user with the given email exists.
+     * Check if a user exists
+     * with the given email.
      *
-     * @param email the email to check
+     * @param input the input to check
      * @return whether the user exists
      */
-    public boolean doesUserExist(@NonNull String email) {
-        return StringUtils.isValidEmail(email) && userRepository.findByEmailIgnoreCase(email) != null;
+    public boolean doesUserExist(UserExistsInput input) {
+        if (input == null || (!input.isValid())) { // Ensure the input was provided
+            throw new BadRequestException(Error.MALFORMED_USER_EXISTS_INPUT);
+        }
+        captchaService.validateCaptcha(input.getCaptchaResponse());
+        return StringUtils.isValidEmail(input.getEmail()) && userRepository.findByEmailIgnoreCase(input.getEmail()) != null;
     }
 
     /**
@@ -215,6 +227,7 @@ public final class UserService {
      * User errors.
      */
     private enum Error implements IGenericResponse {
+        MALFORMED_USER_EXISTS_INPUT,
         MALFORMED_ONBOARDING_INPUT,
         MALFORMED_ENABLE_TFA_INPUT,
         ORGANIZATION_SLUG_INVALID,

@@ -5,6 +5,7 @@ import cc.pulseapp.api.model.user.User;
 import cc.pulseapp.api.model.user.UserDTO;
 import cc.pulseapp.api.model.user.input.CompleteOnboardingInput;
 import cc.pulseapp.api.model.user.input.EnableTFAInput;
+import cc.pulseapp.api.model.user.input.UserExistsInput;
 import cc.pulseapp.api.model.user.response.UserSetupTFAResponse;
 import cc.pulseapp.api.service.UserService;
 import lombok.NonNull;
@@ -50,12 +51,12 @@ public final class UserController {
      * A GET endpoint to check if a
      * user exists with the given email.
      *
-     * @param email the email to check
+     * @param input the input to check
      * @return the response
      */
-    @GetMapping("/exists") @ResponseBody @NonNull
-    public ResponseEntity<Map<String, Object>> doesUserExist(@RequestParam @NonNull String email) {
-        return ResponseEntity.ok(Map.of("exists", userService.doesUserExist(email)));
+    @PostMapping("/exists") @ResponseBody @NonNull
+    public ResponseEntity<Map<String, Object>> doesUserExist(UserExistsInput input) {
+        return ResponseEntity.ok(Map.of("exists", userService.doesUserExist(input)));
     }
 
     /**

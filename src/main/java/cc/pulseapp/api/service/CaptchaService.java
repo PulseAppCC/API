@@ -34,7 +34,7 @@ public final class CaptchaService {
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .body(body)
                 .asJson();
-        if (EnvironmentUtils.isProduction() && !response.getBody().getObject().getBoolean("success")) {
+        if (/*EnvironmentUtils.isProduction() && */!response.getBody().getObject().getBoolean("success")) {
             throw new BadRequestException(Error.CAPTCHA_INVALID);
         }
     }
