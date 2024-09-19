@@ -3,6 +3,7 @@ package cc.pulseapp.api.repository;
 import cc.pulseapp.api.model.page.StatusPage;
 import lombok.NonNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  *
  * @author Braydon
  */
+@Repository
 public interface StatusPageRepository extends MongoRepository<StatusPage, Long> {
     /**
      * Find a status page by its name.

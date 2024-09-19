@@ -1,13 +1,15 @@
 package cc.pulseapp.api.service;
 
 import cc.pulseapp.api.common.HashUtils;
-import cc.pulseapp.api.common.RequestUtils;
 import cc.pulseapp.api.common.StringUtils;
 import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.exception.impl.ResourceNotFoundException;
 import cc.pulseapp.api.model.Feature;
 import cc.pulseapp.api.model.IGenericResponse;
-import cc.pulseapp.api.model.user.*;
+import cc.pulseapp.api.model.user.User;
+import cc.pulseapp.api.model.user.UserDTO;
+import cc.pulseapp.api.model.user.UserFlag;
+import cc.pulseapp.api.model.user.UserTier;
 import cc.pulseapp.api.model.user.input.UserLoginInput;
 import cc.pulseapp.api.model.user.input.UserRegistrationInput;
 import cc.pulseapp.api.model.user.response.UserAuthResponse;
@@ -86,7 +88,7 @@ public final class AuthService {
         User user = userRepository.save(new User(
                 snowflakeService.generateSnowflake(), input.getEmail(), input.getUsername().toLowerCase(),
                 HashUtils.hash(salt, input.getPassword()), Base64.getEncoder().encodeToString(salt),
-                null, UserTier.FREE, 0, now
+                null, UserTier.FREE, null, 0, now
         ));
         return new UserAuthResponse(generateSession(request, user), UserDTO.asDTO(user, now));
     }

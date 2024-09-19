@@ -3,6 +3,7 @@ package cc.pulseapp.api.repository;
 import cc.pulseapp.api.model.org.Organization;
 import lombok.NonNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  *
  * @author Braydon
  */
+@Repository
 public interface OrganizationRepository extends MongoRepository<Organization, Long> {
     /**
      * Find an organization by its name.

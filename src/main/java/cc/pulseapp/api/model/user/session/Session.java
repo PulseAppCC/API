@@ -25,7 +25,7 @@ public final class Session {
     /**
      * The snowflake of the user this session is for.
      */
-    @JsonIgnore private final long userSnowflake;
+    @Indexed @JsonIgnore private final long userSnowflake;
 
     /**
      * The access token for the user.

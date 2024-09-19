@@ -17,6 +17,11 @@ public enum UserFlag {
     COMPLETED_ONBOARDING,
 
     /**
+     * The user has two-factor auth enabled.
+     */
+    TFA_ENABLED,
+
+    /**
      * The user is an administrator.
      */
     ADMINISTRATOR

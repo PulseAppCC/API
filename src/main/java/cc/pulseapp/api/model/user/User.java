@@ -34,7 +34,7 @@ public final class User {
     @Indexed @NonNull private final String username;
 
     /**
-     * The password for this user.
+     * The (encrypted) password for this user.
      */
     @NonNull private final String password;
 
@@ -52,6 +52,12 @@ public final class User {
      * The tier of this user.
      */
     @NonNull private final UserTier tier;
+
+    /**
+     * The TFA profile of this
+     * user, present if TFA is enabled.
+     */
+    private TFAProfile tfa;
 
     /**
      * The flags for this user.

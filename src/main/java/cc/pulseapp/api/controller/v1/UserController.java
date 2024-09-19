@@ -4,6 +4,8 @@ import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.model.user.User;
 import cc.pulseapp.api.model.user.UserDTO;
 import cc.pulseapp.api.model.user.input.CompleteOnboardingInput;
+import cc.pulseapp.api.model.user.input.EnableTFAInput;
+import cc.pulseapp.api.model.user.response.UserSetupTFAResponse;
 import cc.pulseapp.api.service.UserService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,5 +70,22 @@ public final class UserController {
     public ResponseEntity<Map<String, Object>> completeOnboarding(CompleteOnboardingInput input) throws BadRequestException {
         userService.completeOnboarding(input);
         return ResponseEntity.ok(Map.of("success", true));
+    }
+
+    /**
+     * A POST endpoint to start
+     * setting up TFA for a user.
+     *
+     * @return the setup response
+     * @throws BadRequestException if the setup fails
+     */
+    @PostMapping("/setup-tfa") @ResponseBody @NonNull
+    public ResponseEntity<UserSetupTFAResponse> setupTwoFactor() throws BadRequestException {
+        return ResponseEntity.ok(userService.setupTwoFactor());
+    }
+
+    @PostMapping("/enable-tfa") @ResponseBody @NonNull
+    public ResponseEntity<List<String>> enableTwoFactor(EnableTFAInput input) throws BadRequestException {
+        return ResponseEntity.ok(userService.enableTwoFactor(input));
     }
 }
