@@ -53,7 +53,8 @@ public class PulseAPI {
                 registry.addMapping("/**")
                         .allowedOrigins("https://pulseapp.cc") // Allow all origins
                         .allowedMethods(Arrays.stream(HttpMethod.values()).map(HttpMethod::name).toArray(String[]::new)) // Allow all methods
-                        .allowedHeaders("*"); // Allow all headers
+                        .allowedHeaders("*")
+                        .allowCredentials(true); // Allow all headers
             }
         };
     }
