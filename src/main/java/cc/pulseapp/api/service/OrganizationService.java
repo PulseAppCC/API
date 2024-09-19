@@ -70,9 +70,16 @@ public final class OrganizationService {
             throw new BadRequestException(Error.ORG_NAME_TAKEN);
         }
         // Create the org and return it
+        slug = slug.trim().replaceAll("-+$", ""); // Trim slug trailing dashes
         return orgRepository.save(new Organization(snowflakeService.generateSnowflake(), name, slug, null, owner.getSnowflake()));
     }
 
+    /**
+     * Get the organizations of the
+     * currently authenticated user.
+     *
+     * @return the organizations
+     */
     @NonNull
     public List<DetailedOrganization> getOrganizations() {
         User user = authService.getAuthenticatedUser();
