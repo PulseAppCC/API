@@ -17,6 +17,7 @@ public final class EnvironmentUtils {
      * Is the app running in a "cloud" environment?
      */
     @Getter private static final boolean cloud;
+
     static {
         String appEnv = System.getenv("APP_ENV");
         String cloudEnv = System.getenv("APP_CLOUD");

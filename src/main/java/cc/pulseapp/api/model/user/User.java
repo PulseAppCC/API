@@ -75,7 +75,7 @@ public final class User {
      * @param flag the flag to add
      */
     public void addFlag(@NonNull UserFlag flag) {
-        flags |= flag.ordinal();
+        flags |= flag.bitwise();
     }
 
     /**
@@ -85,6 +85,7 @@ public final class User {
      * @return whether this user has the flag
      */
     public boolean hasFlag(@NonNull UserFlag flag) {
-        return (flags & flag.ordinal()) != 0;
+        int bitwise = flag.bitwise();
+        return (flags & bitwise) == bitwise;
     }
 }

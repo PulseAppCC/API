@@ -12,6 +12,11 @@ public enum UserFlag {
     DISABLED,
 
     /**
+     * The user's email has been verified.
+     */
+    EMAIL_VERIFIED,
+
+    /**
      * The user completed the onboarding process.
      */
     COMPLETED_ONBOARDING,
@@ -24,5 +29,14 @@ public enum UserFlag {
     /**
      * The user is an administrator.
      */
-    ADMINISTRATOR
+    ADMINISTRATOR;
+
+    /**
+     * Get the bitwise value of this flag.
+     *
+     * @return the bitwise value
+     */
+    public int bitwise() {
+        return 1 << ordinal();
+    }
 }
