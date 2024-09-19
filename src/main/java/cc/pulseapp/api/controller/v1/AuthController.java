@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Iterator;
+
 /**
  * This controller is responsible for handling
  * {@link User} authentication requests.
@@ -58,7 +60,11 @@ public final class AuthController {
      */
     @PostMapping("/login") @ResponseBody @NonNull
     public ResponseEntity<UserAuthResponse> login(@NonNull HttpServletRequest request, UserLoginInput input) throws BadRequestException {
-        request.getHeaderNames().asIterator().forEachRemaining(System.out::println);
+        Iterator<String> iterator = request.getHeaderNames().asIterator();
+        while (iterator.hasNext()) {
+            String name = iterator.next();
+            System.out.println("header: " + name + " = " + request.getHeader(name));
+        }
         return ResponseEntity.ok(authService.loginUser(request, input));
     }
 }
