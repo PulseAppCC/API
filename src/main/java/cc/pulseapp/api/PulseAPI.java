@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.File;
@@ -21,7 +22,7 @@ import java.util.Objects;
  * @author Braydon
  */
 @SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
-@Log4j2(topic = "PulseApp")
+@Log4j2(topic = "PulseApp") @EnableWebMvc
 public class PulseAPI {
     @SneakyThrows
     public static void main(@NonNull String[] args) {
