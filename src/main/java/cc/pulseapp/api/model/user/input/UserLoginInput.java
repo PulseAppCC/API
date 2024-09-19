@@ -23,6 +23,11 @@ public final class UserLoginInput {
     private final String password;
 
     /**
+     * The TFA pin of the user to login with.
+     */
+    private final String tfaPin;
+
+    /**
      * The captcha response token to validate.
      */
     private final String captchaResponse;

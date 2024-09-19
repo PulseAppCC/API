@@ -44,6 +44,11 @@ public final class AuthService {
     @NonNull private final SnowflakeService snowflakeService;
 
     /**
+     * Thw two-factor auth service to use.
+     */
+    @NonNull private final TFAService tfaService;
+
+    /**
      * The repository to store and retrieve users.
      */
     @NonNull private final UserRepository userRepository;
@@ -55,9 +60,11 @@ public final class AuthService {
 
     @Autowired
     public AuthService(@NonNull CaptchaService captchaService, @NonNull SnowflakeService snowflakeService,
-                       @NonNull UserRepository userRepository, @NonNull SessionRepository sessionRepository) {
+                       @NonNull TFAService tfaService, @NonNull UserRepository userRepository,
+                       @NonNull SessionRepository sessionRepository) {
         this.captchaService = captchaService;
         this.snowflakeService = snowflakeService;
+        this.tfaService = tfaService;
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
     }
@@ -114,6 +121,17 @@ public final class AuthService {
         // Ensure the password matches
         if (!HashUtils.hash(Base64.getDecoder().decode(user.getPasswordSalt()), input.getPassword()).equals(user.getPassword())) {
             throw new BadRequestException(Error.PASSWORDS_DO_NOT_MATCH);
+        }
+        // Handle the two-factor auth pin if the user has it enabled
+        if (user.hasFlag(UserFlag.TFA_ENABLED)) {
+            String pin = input.getTfaPin();
+            if (pin == null || (pin.isBlank())) { // No TFA pin received
+                throw new BadRequestException(Error.BORDER_CROSSING);
+            }
+            // Incorrect TFA pin
+            if (pin.length() != 6 || (!tfaService.getPin(user.getTfa().getSecret()).equals(pin))) {
+                throw new BadRequestException(Error.TFA_PIN_INVALID);
+            }
         }
         user.setLastLogin(new Date());
         user = userRepository.save(user);
@@ -194,20 +212,16 @@ public final class AuthService {
      * @throws BadRequestException if the input has an error
      */
     private void validateRegistrationInput(UserRegistrationInput input) throws BadRequestException {
-        // Ensure the input was provided
-        if (input == null || (!input.isValid())) {
+        if (input == null || (!input.isValid())) { // Ensure the input was provided
             throw new BadRequestException(Error.MALFORMED_REGISTRATION_INPUT);
         }
-        // Ensure the email is valid
-        if (!StringUtils.isValidEmail(input.getEmail())) {
+        if (!StringUtils.isValidEmail(input.getEmail())) { // Ensure the email is valid
             throw new BadRequestException(Error.EMAIL_INVALID);
         }
-        // Ensure the username is valid
-        if (!StringUtils.isValidUsername(input.getUsername())) {
+        if (!StringUtils.isValidUsername(input.getUsername())) { // Ensure the username is valid
             throw new BadRequestException(Error.USERNAME_INVALID);
         }
-        // Password and confirmed password must match
-        if (!input.getPassword().equals(input.getPasswordConfirmation())) {
+        if (!input.getPassword().equals(input.getPasswordConfirmation())) { // Ensure passwords match
             throw new BadRequestException(Error.PASSWORDS_DO_NOT_MATCH);
         }
         // The password must meet the requirements
@@ -226,12 +240,10 @@ public final class AuthService {
      * @throws BadRequestException if the input has an error
      */
     private void validateLoginInput(UserLoginInput input) throws BadRequestException {
-        // Ensure the input was provided
-        if (input == null || (!input.isValid())) {
+        if (input == null || (!input.isValid())) { // Ensure the input was provided
             throw new BadRequestException(Error.MALFORMED_LOGIN_INPUT);
         }
-        // Ensure the email is valid
-        if (input.getEmail() != null && (!StringUtils.isValidEmail(input.getEmail()))) {
+        if (!StringUtils.isValidEmail(input.getEmail())) { // Ensure the email is valid
             throw new BadRequestException(Error.EMAIL_INVALID);
         }
         // Finally validate the captcha
@@ -249,6 +261,8 @@ public final class AuthService {
         USERNAME_INVALID,
         USER_NOT_FOUND,
         PASSWORDS_DO_NOT_MATCH,
+        BORDER_CROSSING,
+        TFA_PIN_INVALID,
         EMAIL_ALREADY_USED,
         USER_DISABLED
     }
