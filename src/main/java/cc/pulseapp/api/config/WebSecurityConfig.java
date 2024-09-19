@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,13 +50,13 @@ public class WebSecurityConfig {
             authentication.setAuthenticated(true); // Mark the session as authenticated
             return authentication;
         });
-        return http.cors(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
+        return http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No sessions
                 .formLogin(AbstractHttpConfigurer::disable) // Disable form logins
                 .securityMatcher("/**") // Require auth for all routes
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class) // Add the auth token filter
                 .authorizeHttpRequests(registry -> registry // Except for the following routes
+                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/error")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/v*/auth/register")).permitAll()
