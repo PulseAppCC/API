@@ -1,6 +1,7 @@
 package cc.pulseapp.api.controller.v1;
 
 import cc.pulseapp.api.exception.impl.BadRequestException;
+import cc.pulseapp.api.model.user.User;
 import cc.pulseapp.api.model.user.input.UserLoginInput;
 import cc.pulseapp.api.model.user.input.UserRegistrationInput;
 import cc.pulseapp.api.model.user.response.UserAuthResponse;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * This controller is responsible for
- * handling user authentication requests.
+ * This controller is responsible for handling
+ * {@link User} authentication requests.
  *
  * @author Braydon
  */

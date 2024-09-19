@@ -7,7 +7,6 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.security.SecureRandom;
-import java.util.regex.Pattern;
 
 /**
  * @author Braydon

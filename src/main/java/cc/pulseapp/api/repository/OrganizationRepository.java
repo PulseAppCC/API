@@ -4,6 +4,8 @@ import cc.pulseapp.api.model.org.Organization;
 import lombok.NonNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
+
 /**
  * The repository for interacting with {@link Organization}'s.
  *
@@ -17,4 +19,13 @@ public interface OrganizationRepository extends MongoRepository<Organization, Lo
      * @return the org with the name
      */
     Organization findByNameIgnoreCase(@NonNull String name);
+
+    /**
+     * Get the organizations that
+     * are owned by the given user.
+     *
+     * @param ownerSnowflake the user snowflake
+     * @return the owned organizations
+     */
+    List<Organization> findByOwnerSnowflake(long ownerSnowflake);
 }

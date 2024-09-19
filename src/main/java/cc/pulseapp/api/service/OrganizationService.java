@@ -4,18 +4,28 @@ import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.model.Feature;
 import cc.pulseapp.api.model.IGenericResponse;
 import cc.pulseapp.api.model.org.Organization;
+import cc.pulseapp.api.model.org.response.OrganizationResponse;
 import cc.pulseapp.api.model.user.User;
 import cc.pulseapp.api.repository.OrganizationRepository;
+import cc.pulseapp.api.repository.StatusPageRepository;
 import jakarta.annotation.Nonnull;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Braydon
  */
 @Service
 public final class OrganizationService {
+    /**
+     * The auth service to use for retrieving the user.
+     */
+    @NonNull private final AuthService authService;
+
     /**
      * The service to use for snowflake generation.
      */
@@ -26,10 +36,18 @@ public final class OrganizationService {
      */
     @NonNull private final OrganizationRepository orgRepository;
 
+    /**
+     * The repository to retrieve status pages from.
+     */
+    @Nonnull private final StatusPageRepository statusPageRepository;
+
     @Autowired
-    public OrganizationService(@NonNull SnowflakeService snowflakeService, @NonNull OrganizationRepository orgRepository) {
+    public OrganizationService(@NonNull AuthService authService, @NonNull SnowflakeService snowflakeService,
+                               @NonNull OrganizationRepository orgRepository, @Nonnull StatusPageRepository statusPageRepository) {
+        this.authService = authService;
         this.snowflakeService = snowflakeService;
         this.orgRepository = orgRepository;
+        this.statusPageRepository = statusPageRepository;
     }
 
     /**
@@ -53,6 +71,16 @@ public final class OrganizationService {
         }
         // Create the org and return it
         return orgRepository.save(new Organization(snowflakeService.generateSnowflake(), name, slug, owner.getSnowflake()));
+    }
+
+    @NonNull
+    public OrganizationResponse getOrganizations() {
+        User user = authService.getAuthenticatedUser();
+        List<OrganizationResponse.Organization> organizations = new ArrayList<>();
+        for (Organization org : orgRepository.findByOwnerSnowflake(user.getSnowflake())) {
+            organizations.add(new OrganizationResponse.Organization(org, statusPageRepository.findByOrgSnowflake(org.getSnowflake())));
+        }
+        return new OrganizationResponse(organizations);
     }
 
     /**

@@ -4,6 +4,8 @@ import cc.pulseapp.api.model.page.StatusPage;
 import lombok.NonNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
+
 /**
  * The repository for interacting with {@link StatusPage}'s.
  *
@@ -17,4 +19,13 @@ public interface StatusPageRepository extends MongoRepository<StatusPage, Long> 
      * @return the status page with the name
      */
     StatusPage findByNameIgnoreCase(@NonNull String name);
+
+    /**
+     * Find the status pages that are
+     * owned by the given organization.
+     *
+     * @param orgSnowflake the org snowflake
+     * @return the list of status pages
+     */
+    List<StatusPage> findByOrgSnowflake(long orgSnowflake);
 }

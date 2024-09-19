@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 @AllArgsConstructor @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true) @ToString
 @Document("organizations")
-public final class Organization {
+public class Organization {
     public static final Pattern SLUG_PATTERN = Pattern.compile("^[a-z0-9]+(?:-[a-z0-9]+)*$");
 
     /**
