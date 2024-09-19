@@ -6,6 +6,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -31,5 +34,21 @@ public class PulseAPI {
         }
         log.info("Found configuration at '{}'", config.getAbsolutePath());
         SpringApplication.run(PulseAPI.class, args); // Start the app
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
+                // Allow all origins to access the API
+                registry.addMapping("/*")
+                        .allowedOrigins("*") // Allow all origins
+                        .allowedMethods("*") // Allow all methods
+                        .allowedHeaders("*"); // Allow all headers
+//                registry.addMapping("/*")
+//                        .allowedOrigins("http://localhost:9000");
+            }
+        };
     }
 }
