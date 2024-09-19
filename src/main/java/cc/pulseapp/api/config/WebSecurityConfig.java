@@ -49,7 +49,8 @@ public class WebSecurityConfig {
             authentication.setAuthenticated(true); // Mark the session as authenticated
             return authentication;
         });
-        return http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF
+        return http.cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No sessions
                 .formLogin(AbstractHttpConfigurer::disable) // Disable form logins
                 .securityMatcher("/**") // Require auth for all routes
