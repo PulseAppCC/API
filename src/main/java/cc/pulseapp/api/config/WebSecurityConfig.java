@@ -56,7 +56,7 @@ public class WebSecurityConfig {
                 .securityMatcher("/**") // Require auth for all routes
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class) // Add the auth token filter
                 .authorizeHttpRequests(registry -> registry // Except for the following routes
-                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/error")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/v*/auth/register")).permitAll()
