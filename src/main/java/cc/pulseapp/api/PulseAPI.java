@@ -8,13 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.servlet.config.annotation.CorsRegistration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -49,11 +49,10 @@ public class PulseAPI {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 // Allow all origins to access the API
-                CorsRegistration registration = registry.addMapping("/**")
-                        .allowedOrigins("*");// Allow all origins
-                for (HttpMethod method : HttpMethod.values()) {
-                    registration.allowedMethods(method.name());
-                }
+                registry.addMapping("/**")
+                        .allowedOrigins("*") // Allow all origins
+                        .allowedMethods(Arrays.stream(HttpMethod.values()).map(HttpMethod::name).toArray(String[]::new)) // Allow all methods
+                        .allowedHeaders("*"); // Allow all headers
             }
         };
     }
