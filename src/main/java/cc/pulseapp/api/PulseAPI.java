@@ -50,10 +50,14 @@ public class PulseAPI {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 // Allow all origins to access the API
+//                registry.addMapping("/**")
+//                        .allowedMethods(Arrays.stream(HttpMethod.values()).map(HttpMethod::name).toArray(String[]::new)) // Allow all methods
+//                        .allowedHeaders("*")
+//                        .allowCredentials(true);
                 registry.addMapping("/**")
-                        .allowedMethods(Arrays.stream(HttpMethod.values()).map(HttpMethod::name).toArray(String[]::new)) // Allow all methods
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowedOrigins("*") // Allow all origins
+                        .allowedMethods("*") // Allow all methods
+                        .allowedHeaders("*"); // Allow all headers
             }
         };
     }
