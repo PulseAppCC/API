@@ -79,6 +79,15 @@ public final class User {
     }
 
     /**
+     * Remove a flag from this user.
+     *
+     * @param flag the flag to remove
+     */
+    public void removeFlag(@NonNull UserFlag flag) {
+        flags &= ~flag.bitwise();
+    }
+
+    /**
      * Check if this user has a given flag.
      *
      * @param flag the flag to check

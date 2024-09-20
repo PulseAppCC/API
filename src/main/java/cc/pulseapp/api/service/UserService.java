@@ -223,6 +223,17 @@ public final class UserService {
     }
 
     /**
+     * Disable two-factor auth for the
+     * currently authenticated user.
+     */
+    public void disableTwoFactor() {
+        User user = authService.getAuthenticatedUser();
+        user.setTfa(null);
+        user.removeFlag(UserFlag.TFA_ENABLED);
+        userRepository.save(user);
+    }
+
+    /**
      * Logout the user.
      */
     public void logout() {

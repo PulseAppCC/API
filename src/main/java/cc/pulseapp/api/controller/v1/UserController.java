@@ -98,6 +98,17 @@ public final class UserController {
     }
 
     /**
+     * A POST endpoint to disable TFA for a useer.
+     *
+     * @return the disabled response
+     */
+    @PostMapping("/disable-tfa") @ResponseBody @NonNull
+    public ResponseEntity<Map<String, Object>> disableTwoFactor() {
+        userService.disableTwoFactor();
+        return ResponseEntity.ok(Map.of("success", true));
+    }
+
+    /**
      * A POST endpoint to logout the user.
      *
      * @return the logout response
