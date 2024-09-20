@@ -21,7 +21,7 @@ public final class Session {
     /**
      * The snowflake of this session.
      */
-    @EqualsAndHashCode.Include @Id @JsonIgnore private final long snowflake;
+    @EqualsAndHashCode.Include @Id private final long snowflake;
 
     /**
      * The snowflake of the user this session is for.

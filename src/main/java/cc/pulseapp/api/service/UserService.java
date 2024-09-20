@@ -10,6 +10,9 @@ import cc.pulseapp.api.model.user.TFAProfile;
 import cc.pulseapp.api.model.user.User;
 import cc.pulseapp.api.model.user.UserDTO;
 import cc.pulseapp.api.model.user.UserFlag;
+import cc.pulseapp.api.model.user.device.BrowserType;
+import cc.pulseapp.api.model.user.device.Device;
+import cc.pulseapp.api.model.user.device.DeviceType;
 import cc.pulseapp.api.model.user.input.CompleteOnboardingInput;
 import cc.pulseapp.api.model.user.input.DisableTFAInput;
 import cc.pulseapp.api.model.user.input.EnableTFAInput;
@@ -21,6 +24,9 @@ import cc.pulseapp.api.repository.UserRepository;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.NonNull;
+import nl.basjes.parse.useragent.UserAgent;
+import nl.basjes.parse.useragent.UserAgentAnalyzer;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +41,12 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public final class UserService {
+    private static final UserAgentAnalyzer userAgentAnalyzer = UserAgentAnalyzer
+            .newBuilder()
+            .useJava8CompatibleCaching()
+            .withCache(10000)
+            .build();
+
     /**
      * The auth service to use.
      */
@@ -61,11 +73,6 @@ public final class UserService {
     @NonNull private final TFAService tfaService;
 
     /**
-     * The captcha service to use.
-     */
-    @NonNull private final CaptchaService captchaService;
-
-    /**
      * The user repository to use.
      */
     @NonNull private final UserRepository userRepository;
@@ -89,14 +96,13 @@ public final class UserService {
     @Autowired
     public UserService(@NonNull AuthService authService, @NonNull SnowflakeService snowflakeService,
                        @NonNull OrganizationService orgService, @NonNull StatusPageService statusPageService,
-                       @NonNull TFAService tfaService, @NonNull CaptchaService captchaService,
-                       @NonNull UserRepository userRepository, @NonNull SessionRepository sessionRepository) {
+                       @NonNull TFAService tfaService, @NonNull UserRepository userRepository,
+                       @NonNull SessionRepository sessionRepository) {
         this.authService = authService;
         this.snowflakeService = snowflakeService;
         this.orgService = orgService;
         this.statusPageService = statusPageService;
         this.tfaService = tfaService;
-        this.captchaService = captchaService;
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
     }
@@ -243,6 +249,31 @@ public final class UserService {
         user.setTfa(null);
         user.removeFlag(UserFlag.TFA_ENABLED);
         userRepository.save(user);
+    }
+
+    /**
+     * Get the devices logged into
+     * the authenticated user.
+     *
+     * @return the devices
+     */
+    @NonNull
+    public List<Device> getDevices() {
+        List<Device> devices = new ArrayList<>();
+        User user = authService.getAuthenticatedUser();
+        for (Session session : sessionRepository.findAllByUserSnowflake(user.getSnowflake())) {
+            UserAgent.ImmutableUserAgent userAgent = userAgentAnalyzer.parse(session.getLocation().getUserAgent());
+            DeviceType deviceType = EnumUtils.getEnum(DeviceType.class, userAgent.get("DeviceClass").getValue().toUpperCase());
+            BrowserType browserType = EnumUtils.getEnum(BrowserType.class, userAgent.get("AgentName").getValue().toUpperCase());
+            if (deviceType == null) {
+                deviceType = DeviceType.UNKNOWN;
+            }
+            if (browserType == null) {
+                browserType = BrowserType.UNKNOWN;
+            }
+            devices.add(Device.fromSession(session, deviceType, browserType, new Date(snowflakeService.extractCreationTime(session.getSnowflake()))));
+        }
+        return devices;
     }
 
     /**
