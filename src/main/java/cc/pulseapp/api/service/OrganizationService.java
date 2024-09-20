@@ -7,6 +7,7 @@ import cc.pulseapp.api.model.IGenericResponse;
 import cc.pulseapp.api.model.org.DetailedOrganization;
 import cc.pulseapp.api.model.org.Organization;
 import cc.pulseapp.api.model.user.User;
+import cc.pulseapp.api.model.user.UserFlag;
 import cc.pulseapp.api.repository.OrganizationRepository;
 import cc.pulseapp.api.repository.StatusPageRepository;
 import jakarta.annotation.Nonnull;
@@ -72,7 +73,7 @@ public final class OrganizationService {
             throw new BadRequestException(Error.ORG_SLUG_TAKEN);
         }
         // Handle cloud environment checks
-        if (EnvironmentUtils.isCloud()) {
+        if (EnvironmentUtils.isCloud() && !owner.hasFlag(UserFlag.ADMINISTRATOR)) {
             if (orgRepository.findByOwnerSnowflake(owner.getSnowflake()).size() >= owner.getTier().getMaxOrganizations()) {
                 throw new BadRequestException(Error.MAX_ORGS_REACHED);
             }

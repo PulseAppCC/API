@@ -55,7 +55,7 @@ public final class StatusPageService {
             throw new BadRequestException(Error.STATUS_PAGE_NAME_TAKEN);
         }
         // Handle cloud environment checks
-        if (EnvironmentUtils.isCloud()) {
+        if (EnvironmentUtils.isCloud()/* && !owner.hasFlag(UserFlag.ADMINISTRATOR)*/) {
             // TODO: do UserTier#maxStatusPages check
         }
         // Create the status page and return it
