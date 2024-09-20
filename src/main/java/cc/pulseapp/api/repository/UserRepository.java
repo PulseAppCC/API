@@ -19,12 +19,4 @@ public interface UserRepository extends MongoRepository<User, Long> {
      * @return the user with the email
      */
     User findByEmailIgnoreCase(@NonNull String email);
-
-    /**
-     * Find a user by their username.
-     *
-     * @param username the username of the user
-     * @return the user with the username
-     */
-    User findByUsernameIgnoreCase(@NonNull String username);
 }

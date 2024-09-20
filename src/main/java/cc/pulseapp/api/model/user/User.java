@@ -60,7 +60,7 @@ public final class User {
     private TFAProfile tfa;
 
     /**
-     * The flags for this user.
+     * The bitwise flags for this user.
      */
     private int flags;
 

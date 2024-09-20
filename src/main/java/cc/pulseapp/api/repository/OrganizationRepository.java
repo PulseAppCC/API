@@ -3,6 +3,7 @@ package cc.pulseapp.api.repository;
 import cc.pulseapp.api.model.org.Organization;
 import lombok.NonNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,12 +16,12 @@ import java.util.List;
 @Repository
 public interface OrganizationRepository extends MongoRepository<Organization, Long> {
     /**
-     * Find an organization by its name.
+     * Get the organization that has the given slug.
      *
-     * @param name the name of the org
-     * @return the org with the name
+     * @param slug the organization slug
+     * @return the organization, null if none
      */
-    Organization findByNameIgnoreCase(@NonNull String name);
+    Organization findBySlug(@NonNull String slug);
 
     /**
      * Get the organizations that
@@ -30,4 +31,14 @@ public interface OrganizationRepository extends MongoRepository<Organization, Lo
      * @return the owned organizations
      */
     List<Organization> findByOwnerSnowflake(long ownerSnowflake);
+
+    /**
+     * Get the organizations that the user
+     * either owns or is a member of.
+     *
+     * @param userSnowflake the user's snowflake
+     * @return the organizations the user has access to
+     */
+    @Query("{ '$or': [ { 'ownerSnowflake': ?0 }, { 'members.userSnowflake': ?0 } ] }")
+    List<Organization> findByUserAccess(long userSnowflake);
 }

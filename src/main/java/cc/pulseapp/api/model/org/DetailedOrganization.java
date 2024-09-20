@@ -21,7 +21,7 @@ public final class DetailedOrganization extends cc.pulseapp.api.model.org.Organi
     @NonNull private final List<StatusPage> statusPages;
 
     public DetailedOrganization(@NonNull cc.pulseapp.api.model.org.Organization origin, @NonNull List<StatusPage> statusPages) {
-        super(origin.getSnowflake(), origin.getName(), origin.getSlug(), origin.getLogo(), origin.getOwnerSnowflake());
+        super(origin.getSnowflake(), origin.getName(), origin.getSlug(), origin.getLogo(), origin.getMembers(), origin.getOwnerSnowflake());
         this.statusPages = statusPages;
     }
 }

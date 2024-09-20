@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -38,6 +39,11 @@ public class Organization {
      * The hash to the logo of this organization, if any.
      */
     private final String logo;
+
+    /**
+     * The members of this organization.
+     */
+    @NonNull private final List<OrganizationMember> members;
 
     /**
      * The snowflake of the {@link User}

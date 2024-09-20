@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -66,21 +67,18 @@ public final class OrganizationService {
         if (!Feature.ORG_CREATION_ENABLED.isEnabled()) {
             throw new BadRequestException(Error.ORG_CREATION_DISABLED);
         }
-        List<Organization> ownedOrgs = orgRepository.findByOwnerSnowflake(owner.getSnowflake());
-
-        // Ensure the org name isn't taken
-        if (ownedOrgs.stream().anyMatch(org -> org.getName().equalsIgnoreCase(name))) {
-            throw new BadRequestException(Error.ORG_NAME_TAKEN);
+        // Ensure the org slug isn't taken
+        if (orgRepository.findBySlug(slug) != null) {
+            throw new BadRequestException(Error.ORG_SLUG_TAKEN);
         }
         // Handle cloud environment checks
         if (EnvironmentUtils.isCloud()) {
-            if (ownedOrgs.size() >= owner.getTier().getMaxOrganizations()) {
+            if (orgRepository.findByOwnerSnowflake(owner.getSnowflake()).size() >= owner.getTier().getMaxOrganizations()) {
                 throw new BadRequestException(Error.MAX_ORGS_REACHED);
             }
         }
         // Create the org and return it
-        slug = slug.trim().replaceAll("-+$", ""); // Trim slug trailing dashes
-        return orgRepository.save(new Organization(snowflakeService.generateSnowflake(), name, slug, null, owner.getSnowflake()));
+        return orgRepository.save(new Organization(snowflakeService.generateSnowflake(), name, slug, null, Collections.emptyList(), owner.getSnowflake()));
     }
 
     /**
@@ -93,7 +91,7 @@ public final class OrganizationService {
     public List<DetailedOrganization> getOrganizations() {
         User user = authService.getAuthenticatedUser();
         List<DetailedOrganization> organizations = new ArrayList<>();
-        for (Organization org : orgRepository.findByOwnerSnowflake(user.getSnowflake())) {
+        for (Organization org : orgRepository.findByUserAccess(user.getSnowflake())) {
             organizations.add(new DetailedOrganization(org, statusPageRepository.findByOrgSnowflake(org.getSnowflake())));
         }
         return organizations;
@@ -104,7 +102,7 @@ public final class OrganizationService {
      */
     private enum Error implements IGenericResponse {
         ORG_CREATION_DISABLED,
-        ORG_NAME_TAKEN,
+        ORG_SLUG_TAKEN,
         MAX_ORGS_REACHED
     }
 }
