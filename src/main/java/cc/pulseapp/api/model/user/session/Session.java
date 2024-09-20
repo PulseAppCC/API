@@ -3,6 +3,7 @@ package cc.pulseapp.api.model.user.session;
 import cc.pulseapp.api.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
@@ -14,13 +15,13 @@ import org.springframework.data.redis.core.index.Indexed;
  *
  * @author Braydon
  */
-@AllArgsConstructor @Getter
+@AllArgsConstructor @Getter @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @RedisHash(value = "sessions", timeToLive = 30 * 24 * 60 * 60) // Expire in 30 days (days, hours, mins, secs)
 public final class Session {
     /**
      * The snowflake of this session.
      */
-    @Id @JsonIgnore private final long snowflake;
+    @EqualsAndHashCode.Include @Id @JsonIgnore private final long snowflake;
 
     /**
      * The snowflake of the user this session is for.

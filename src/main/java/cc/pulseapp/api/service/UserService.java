@@ -2,6 +2,7 @@ package cc.pulseapp.api.service;
 
 import cc.pulseapp.api.common.HashUtils;
 import cc.pulseapp.api.common.StringUtils;
+import cc.pulseapp.api.common.Tuple;
 import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.model.IGenericResponse;
 import cc.pulseapp.api.model.org.Organization;
@@ -13,6 +14,7 @@ import cc.pulseapp.api.model.user.input.CompleteOnboardingInput;
 import cc.pulseapp.api.model.user.input.EnableTFAInput;
 import cc.pulseapp.api.model.user.input.UserExistsInput;
 import cc.pulseapp.api.model.user.response.UserSetupTFAResponse;
+import cc.pulseapp.api.model.user.session.Session;
 import cc.pulseapp.api.repository.SessionRepository;
 import cc.pulseapp.api.repository.UserRepository;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -181,7 +183,9 @@ public final class UserService {
         if (input == null || (!input.isValid())) { // Ensure the input was provided
             throw new BadRequestException(Error.MALFORMED_ENABLE_TFA_INPUT);
         }
-        User user = authService.getAuthenticatedUser();
+        Tuple<Session, User> sessionAndUser = authService.getSessionAndUser();
+        Session session = sessionAndUser.getLeft();
+        User user = sessionAndUser.getRight();
         if (user.hasFlag(UserFlag.TFA_ENABLED)) { // Ensure TFA isn't already on
             throw new BadRequestException(Error.TFA_ALREADY_ENABLED);
         }
@@ -211,7 +215,9 @@ public final class UserService {
         userRepository.save(user);
 
         // And finally invalidate all of the sessions for the user
-        sessionRepository.deleteAll(sessionRepository.findAllByUserSnowflake(user.getSnowflake()));
+        List<Session> sessions = sessionRepository.findAllByUserSnowflake(user.getSnowflake());
+        sessions.removeIf(activeSession -> activeSession.equals(session));
+        sessionRepository.deleteAll(sessions);
 
         return originalBackupCodes;
     }
