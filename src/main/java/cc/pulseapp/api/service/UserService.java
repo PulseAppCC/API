@@ -123,7 +123,6 @@ public final class UserService {
         if (input == null || (!input.isValid())) { // Ensure the input was provided
             throw new BadRequestException(Error.MALFORMED_USER_EXISTS_INPUT);
         }
-        captchaService.validateCaptcha(input.getCaptchaResponse());
         return StringUtils.isValidEmail(input.getEmail()) && userRepository.findByEmailIgnoreCase(input.getEmail()) != null;
     }
 

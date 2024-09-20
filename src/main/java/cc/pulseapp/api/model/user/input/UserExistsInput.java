@@ -19,17 +19,11 @@ public final class UserExistsInput {
     private final String email;
 
     /**
-     * The captcha response token to validate.
-     */
-    private final String captchaResponse;
-
-    /**
      * Check if this input is valid.
      *
      * @return whether this input is valid
      */
     public boolean isValid() {
-        return email != null && (!email.isBlank())
-                && captchaResponse != null && (!captchaResponse.isBlank());
+        return email != null && (!email.isBlank());
     }
 }

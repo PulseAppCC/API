@@ -140,7 +140,7 @@ public final class AuthService {
      * Use a TFA pin for a user.
      *
      * @param user the user to use TFA for
-     * @param pin the pin to use
+     * @param pin  the pin to use
      * @throws BadRequestException if using TFA fails
      */
     public void useTfaPin(@NonNull User user, @NonNull String pin) throws BadRequestException {
