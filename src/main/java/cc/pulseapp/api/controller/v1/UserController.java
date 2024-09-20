@@ -4,6 +4,7 @@ import cc.pulseapp.api.exception.impl.BadRequestException;
 import cc.pulseapp.api.model.user.User;
 import cc.pulseapp.api.model.user.UserDTO;
 import cc.pulseapp.api.model.user.input.CompleteOnboardingInput;
+import cc.pulseapp.api.model.user.input.DisableTFAInput;
 import cc.pulseapp.api.model.user.input.EnableTFAInput;
 import cc.pulseapp.api.model.user.input.UserExistsInput;
 import cc.pulseapp.api.model.user.response.UserSetupTFAResponse;
@@ -100,11 +101,13 @@ public final class UserController {
     /**
      * A POST endpoint to disable TFA for a useer.
      *
+     * @param input the input to process
      * @return the disabled response
+     * @throws BadRequestException if disabling fails
      */
     @PostMapping("/disable-tfa") @ResponseBody @NonNull
-    public ResponseEntity<Map<String, Object>> disableTwoFactor() {
-        userService.disableTwoFactor();
+    public ResponseEntity<Map<String, Object>> disableTwoFactor(DisableTFAInput input) throws BadRequestException {
+        userService.disableTwoFactor(input);
         return ResponseEntity.ok(Map.of("success", true));
     }
 

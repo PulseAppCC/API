@@ -11,6 +11,7 @@ import cc.pulseapp.api.model.user.User;
 import cc.pulseapp.api.model.user.UserDTO;
 import cc.pulseapp.api.model.user.UserFlag;
 import cc.pulseapp.api.model.user.input.CompleteOnboardingInput;
+import cc.pulseapp.api.model.user.input.DisableTFAInput;
 import cc.pulseapp.api.model.user.input.EnableTFAInput;
 import cc.pulseapp.api.model.user.input.UserExistsInput;
 import cc.pulseapp.api.model.user.response.UserSetupTFAResponse;
@@ -197,7 +198,7 @@ public final class UserService {
             throw new BadRequestException(Error.TFA_SETUP_SECRET_MISMATCH);
         }
         if (!tfaService.getPin(secret).equals(input.getPin())) { // Ensure the pin is valid
-            throw new BadRequestException(Error.TFA_SETUP_PIN_INVALID);
+            throw new BadRequestException(Error.TFA_PIN_INVALID);
         }
         // Enable TFA for the user
         byte[] salt = HashUtils.generateSalt();
@@ -225,9 +226,22 @@ public final class UserService {
     /**
      * Disable two-factor auth for the
      * currently authenticated user.
+     *
+     * @param input the input to process
+     * @throws BadRequestException if disabling fails
      */
-    public void disableTwoFactor() {
+    public void disableTwoFactor(DisableTFAInput input) throws BadRequestException {
+        if (input == null || (!input.isValid())) { // Ensure the input was provided
+            throw new BadRequestException(Error.MALFORMED_DISABLE_TFA_INPUT);
+        }
         User user = authService.getAuthenticatedUser();
+        if (!user.hasFlag(UserFlag.TFA_ENABLED)) { // Ensure TFA is already on
+            throw new BadRequestException(Error.TFA_NOT_ENABLED);
+        }
+        if (!tfaService.getPin(user.getTfa().getSecret()).equals(input.getPin())) { // Ensure the pin is valid
+            throw new BadRequestException(Error.TFA_PIN_INVALID);
+        }
+        // Disable TFA for the user
         user.setTfa(null);
         user.removeFlag(UserFlag.TFA_ENABLED);
         userRepository.save(user);
@@ -247,11 +261,13 @@ public final class UserService {
         MALFORMED_USER_EXISTS_INPUT,
         MALFORMED_ONBOARDING_INPUT,
         MALFORMED_ENABLE_TFA_INPUT,
+        MALFORMED_DISABLE_TFA_INPUT,
         ORGANIZATION_SLUG_INVALID,
         ALREADY_ONBOARDED,
         TFA_ALREADY_ENABLED,
+        TFA_NOT_ENABLED,
         TFA_SETUP_TIMED_OUT,
         TFA_SETUP_SECRET_MISMATCH,
-        TFA_SETUP_PIN_INVALID,
+        TFA_PIN_INVALID,
     }
 }
