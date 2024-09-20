@@ -128,15 +128,45 @@ public final class AuthService {
             if (pin == null || (pin.isBlank())) { // No TFA pin received
                 throw new BadRequestException(Error.BORDER_CROSSING);
             }
-            // Incorrect TFA pin
-            if (pin.length() != 6 || (!tfaService.getPin(user.getTfa().getSecret()).equals(pin))) {
-                throw new BadRequestException(Error.TFA_PIN_INVALID);
-            }
+            useTfaPin(user, pin); // Attempt to use the pin
         }
         user.setLastLogin(new Date());
         user = userRepository.save(user);
         return new UserAuthResponse(generateSession(request, user),
                 UserDTO.asDTO(user, new Date(snowflakeService.extractCreationTime(user.getSnowflake()))));
+    }
+
+    /**
+     * Use a TFA pin for a user.
+     *
+     * @param user the user to use TFA for
+     * @param pin the pin to use
+     * @throws BadRequestException if using TFA fails
+     */
+    public void useTfaPin(@NonNull User user, @NonNull String pin) throws BadRequestException {
+        if (pin.length() != 6) { // Ensure the pin is the correct length
+            throw new BadRequestException(Error.TFA_PIN_INVALID);
+        }
+        if (!user.hasFlag(UserFlag.TFA_ENABLED)) { // Ensure TFA is already on
+            throw new BadRequestException(Error.TFA_NOT_ENABLED);
+        }
+        String encryptedPin = HashUtils.hash(Base64.getDecoder().decode(user.getTfa().getBackupCodesSalt()), pin);
+
+        // Before checking the pin, check the user's backup codes
+        for (String backupCode : user.getTfa().getBackupCodes()) {
+            if (!encryptedPin.equals(backupCode)) {
+                continue;
+            }
+            // The code is a valid backup code, remove it from the user's list
+            user.getTfa().getBackupCodes().remove(backupCode);
+            userRepository.save(user);
+            return;
+        }
+
+        // Check if the TFA pin is valid
+        if (!tfaService.getPin(user.getTfa().getSecret()).equals(pin)) {
+            throw new BadRequestException(Error.TFA_PIN_INVALID);
+        }
     }
 
     /**
@@ -262,6 +292,7 @@ public final class AuthService {
         USER_NOT_FOUND,
         PASSWORDS_DO_NOT_MATCH,
         BORDER_CROSSING,
+        TFA_NOT_ENABLED,
         TFA_PIN_INVALID,
         EMAIL_ALREADY_USED,
         USER_DISABLED

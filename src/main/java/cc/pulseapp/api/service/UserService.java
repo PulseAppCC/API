@@ -238,9 +238,8 @@ public final class UserService {
         if (!user.hasFlag(UserFlag.TFA_ENABLED)) { // Ensure TFA is already on
             throw new BadRequestException(Error.TFA_NOT_ENABLED);
         }
-        if (!tfaService.getPin(user.getTfa().getSecret()).equals(input.getPin())) { // Ensure the pin is valid
-            throw new BadRequestException(Error.TFA_PIN_INVALID);
-        }
+        authService.useTfaPin(user, input.getPin()); // Ensure the pin is valid
+
         // Disable TFA for the user
         user.setTfa(null);
         user.removeFlag(UserFlag.TFA_ENABLED);
